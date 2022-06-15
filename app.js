@@ -44,7 +44,9 @@ app.set("view engine", "handlebars");
 
 /* --- MONGOOSE --- */
 mongoose
-    .connect("mongodb://localhost/eventos-calendario")
+    .connect(
+        "mongodb+srv://guizaum1234:minhasenhaefoda123@cluster0.ugg2p.mongodb.net/?retryWrites=true&w=majority"
+    )
     .then(function() {
         console.log("Conectado com sucesso!");
     })
@@ -63,7 +65,7 @@ app.use("/admin", admin);
 app.use("/usuarios", usuarios);
 
 //OUTROS
-const PORT = 8081;
+const PORT = process.env.port || 8081;
 app.listen(PORT, function() {
     console.log("Servidor Funcionando! http://localhost:8081");
 });
