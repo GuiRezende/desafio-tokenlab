@@ -51,7 +51,7 @@ mongoose
         console.log("Conectado com sucesso!");
     })
     .catch(function(err) {
-        console.logo("Erro ao se conectar: " + err);
+        console.log("Erro ao se conectar: " + err);
     });
 
 /* --- PUBLIC --- */
