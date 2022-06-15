@@ -1,0 +1,42 @@
+{{#each erros}}
+<div class="alert alert-danger">{{texto}}</div>
+{{else}}
+{{/each}}
+
+<div class="card">
+    <div class="card-header">
+        <h3> Novo evento:</h3>
+
+    </div>
+    <div class="card-body">
+        <form action="/admin/eventos/edit" method="POST">
+            <input type="hidden" name="id" value="{{evento._id}}">
+            <div class="mb-3">
+                <label for="titulo" class="form-label">Título do evento:</label>
+                <input type="text" name="titulo" class="form-control" id="titulo" value="{{evento.titulo}}">
+            </div>
+            <div class="mb-3">
+                <label for="descricao" class="form-label">Descricao:</label>
+                <textarea name="descricao" class="form-control" id="descricao">{{evento.descricao}}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="dataHoraInicial" class="form-label">Inicio do evento:</label>
+                <input type="datetime-local" name="dataHoraInicial" class="form-control" id="dataHoraInicial"
+                    value="{{evento.dataHoraInicial}}">
+            </div>
+            <div class="mb-3">
+                <label for="dataHoraFinal" class="form-label">Fim do evento:</label>
+                <input type="datetime-local" min="#dataHoraInicial" name="dataHoraFinal" class="form-control"
+                    value="{{evento.dataHoraInicial}}" id="dataHoraFinal">
+            </div>
+            <div class="mb-3">
+                <label for="criadorEvento" class="form-label">Criador do evento:</label>
+                <input type="text" min="" aria-label="Disabled input example" placeholder="{{evento.criador}}"
+                    name="criadorEvento" class="form-control" id="dataHoraFinal" disabled>
+            </div>
+            <div class="d-grid gap-2 col-6 mx-auto">
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,40 @@
+{{#each erros}}
+<div class="alert alert-danger">{{texto}}</div>
+{{else}}
+{{/each}}
+<div class="card">
+    <div class="card-header">
+        <h3> Novo Registro:</h3>
+
+    </div>
+    <div class="card-body">
+        <form action="" method="POST">
+            <div class="mb-3">
+                <label for="nome" class="form-label">Nome:</label>
+                <input type="text" name="nome" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="sobrenome" class="form-label">Sobrenome:</label>
+                <input type="text" name="sobrenome" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" name="email" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="senha" class="form-label">Senha:</label>
+                <input type="password" name="senha" class="form-control" aria-describedby="passwordHelpBlock">
+                <div id="passwordHelpBlock" class="form-text">
+                    Sua senha deve conter no minímo 4 caracteres.
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="senha2" class="form-label">Repita sua senha:</label>
+                <input type="password" name="senha2" class="form-control">
+            </div>
+            <div class="d-grid gap-2 col-6 mx-auto">
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
