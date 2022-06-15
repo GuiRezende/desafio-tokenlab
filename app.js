@@ -45,7 +45,7 @@ app.set("view engine", "handlebars");
 /* --- MONGOOSE --- */
 mongoose
     .connect(
-        "mongodb+srv://guizaum1234:minhasenhaefoda123@cluster0.ugg2p.mongodb.net/?retryWrites=true&w=majority"
+        "mongodb+srv://guilherme-dev123:010501iva@cluster0.xepzr.mongodb.net/?retryWrites=true&w=majority"
     )
     .then(function() {
         console.log("Conectado com sucesso!");
