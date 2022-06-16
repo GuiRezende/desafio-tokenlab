@@ -6,17 +6,16 @@
     <h3>Listar eventos</h3>
     <a href="/admin/eventos/add"><button class="btn btn-success">Adicionar</button></a>
 </div>
-<div class="row row-cols-1 row-cols-lg-4 g-2 g-lg-3 mt-4 text-center">
+<div class="row row-cols-1 row-cols-lg-4 g-2 g-lg-3 mt-4 ">
     {{#each eventos}}
-    <div class="mx-auto col">
-        <div class="card" style="width: 17rem;">
+    <div class="mx-auto col text-center d-flex justify-content-center">
+        <div class="card " style="width: 17rem;">
             <div class="card-body">
                 <h5 class="card-title">{{titulo}}</h5>
                 <h6 class="card-subtitle mb-2 text-muted"></h6>
                 <p class="card-text">
-                    <hr>
+                    <hr style="color: red;">
                     <small><strong>Horários</strong></small>
-                    {{evento.criador.nome}}{{criador.nome}}
                     <small><small>
                             <p>Inicio: {{dataHoraInicial}}<br>Fim: {{dataHoraFinal}}</p>
                         </small></small>

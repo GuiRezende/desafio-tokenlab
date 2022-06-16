@@ -7,7 +7,7 @@ const Evento = mongoose.model("eventos");
 const { eLogin } = require("../helpers/eLogin");
 
 router.get("/", function(req, res) {
-    res.render("/index/admin");
+    res.render("admin/eventos");
 });
 
 router.get("/posts", eLogin, function(req, res) {
@@ -17,7 +17,7 @@ router.get("/posts", eLogin, function(req, res) {
 router.get("/eventos", eLogin, function(req, res) {
     Evento.find()
         .lean()
-        .sort({ dataHoraInicial: "desc" })
+        .sort({ dataHoraInicial: "asc" })
         .then(function(eventos) {
             res.render("admin/eventos", { eventos: eventos });
         })
@@ -43,7 +43,7 @@ router.post("/eventos/nova", eLogin, function(req, res) {
         req.body.titulo == undefined ||
         req.body.titulo === null
     ) {
-        erros.push({ texto: "titulo inválido" });
+        erros.push({ texto: "Título inválido" });
     }
     if (!req.body.descricao ||
         req.body.descricao == undefined ||
@@ -55,16 +55,16 @@ router.post("/eventos/nova", eLogin, function(req, res) {
         req.body.dataHoraInicial == undefined ||
         req.body.dataHoraInicial === null
     ) {
-        erros.push({ texto: "Data inicial inválida" });
+        erros.push({ texto: "Data inicial é inválida" });
     }
     if (!req.body.dataHoraFinal ||
         req.body.dataHoraFinal == undefined ||
         req.body.dataHoraFinal === null
     ) {
-        erros.push({ texto: "Data final inválido" });
+        erros.push({ texto: "Data final é inválida" });
     }
     if (req.body.titulo.length < 2) {
-        erros.push({ texto: "titulo do evento é muito pequeno" });
+        erros.push({ texto: "Título do evento é muito pequeno" });
     }
     if (erros.length > 0) {
         res.render("admin/addeventos", { erros: erros });
@@ -76,7 +76,7 @@ router.post("/eventos/nova", eLogin, function(req, res) {
                         "error_msg",
                         "Já existe um evento com esta hora em nosso sistema!"
                     );
-                    req.redirect("/admin/addeventos");
+                    res.redirect("/admin/eventos");
                 } else {
                     const novoEvento = {
                         titulo: req.body.titulo,
@@ -93,8 +93,9 @@ router.post("/eventos/nova", eLogin, function(req, res) {
                             res.redirect("/admin/eventos");
                         })
                         .catch(function(err) {
+                            console.log(err);
                             req.flash("error_msg", "Erro ao salvar, tente novamente!");
-                            res.redirect("/admin");
+                            res.redirect("/admin/eventos");
                         });
                 }
             }
@@ -106,7 +107,15 @@ router.get("/eventos/edit/:id", eLogin, function(req, res) {
     Evento.findOne({ _id: req.params.id })
         .lean()
         .then(function(evento) {
-            res.render("admin/editeventos", { evento: evento });
+            if (evento.criador.equals(req.user._id)) {
+                res.render("admin/editeventos", { evento: evento });
+            } else {
+                req.flash(
+                    "error_msg",
+                    "Desculpe, você não é o criador deste evento e não pode edita-lo!"
+                );
+                res.redirect("/admin/eventos");
+            }
         })
         .catch(function(err) {
             req.flash("error_msg", "Esse evento não existe!");
@@ -117,29 +126,21 @@ router.get("/eventos/edit/:id", eLogin, function(req, res) {
 router.post("/eventos/edit", eLogin, function(req, res) {
     Evento.findOne({ _id: req.body.id })
         .then(function(evento) {
-            if (evento.criador == req.user) {
-                evento.titulo = req.body.titulo;
-                evento.descricao = req.body.descricao;
-                evento.dataHoraInicial = req.body.dataHoraInicial;
-                evento.dataHoraFinal = req.body.dataHoraFinal;
+            evento.titulo = req.body.titulo;
+            evento.descricao = req.body.descricao;
+            evento.dataHoraInicial = req.body.dataHoraInicial;
+            evento.dataHoraFinal = req.body.dataHoraFinal;
 
-                evento
-                    .save()
-                    .then(function() {
-                        req.flash("success_msg", "Evento editado com sucesso!");
-                        res.redirect("/admin/eventos");
-                    })
-                    .catch(function(err) {
-                        req.flash("error_msg", "Houve um erro ao validar a evento!");
-                        res.redirect("/admin/eventos");
-                    });
-            } else {
-                req.flash(
-                    "error_msg",
-                    "Desculpe, você não é o criador deste evento e não pode edita-lo!"
-                );
-                res.redirect("/admin/eventos");
-            }
+            evento
+                .save()
+                .then(function() {
+                    req.flash("success_msg", "Evento editado com sucesso!");
+                    res.redirect("/admin/eventos");
+                })
+                .catch(function(err) {
+                    req.flash("error_msg", "Houve um erro ao validar a evento!");
+                    res.redirect("/admin/eventos");
+                });
         })
         .catch(function(err) {
             req.flash("error_msg", "Houve um erro ao salvar");
@@ -147,13 +148,28 @@ router.post("/eventos/edit", eLogin, function(req, res) {
 });
 
 router.post("/eventos/deletar", eLogin, function(req, res) {
-    Evento.remove({ _id: req.body.id })
-        .then(function() {
-            req.flash("success_msg", "evento deletada com sucesso!");
-            res.redirect("/admin/eventos");
+    Evento.findOne({ _id: req.body.id })
+        .then((evento) => {
+            if (evento.criador.equals(req.user._id)) {
+                Evento.remove({ _id: evento._id })
+                    .then(function() {
+                        req.flash("success_msg", "Evento deletado com sucesso!");
+                        res.redirect("/admin/eventos");
+                    })
+                    .catch(function(err) {
+                        req.flash("error_msg", "Houve um erro ao deletar a evento!");
+                        res.redirect("/admin/eventos");
+                    });
+            } else {
+                req.flash(
+                    "error_msg",
+                    "Você não é o dono deste evento! Não pode deleta-lo!"
+                );
+                res.redirect("/admin/eventos");
+            }
         })
-        .catch(function(err) {
-            req.flash("error_msg", "Houve um erro ao deletar a evento!");
+        .catch((err) => {
+            req.flash("error_msg", "Erro ao deletar, tente novamente!");
             res.redirect("/admin/eventos");
         });
 });

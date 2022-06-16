@@ -44,9 +44,7 @@ app.set("view engine", "handlebars");
 
 /* --- MONGOOSE --- */
 mongoose
-    .connect(
-        "mongodb+srv://guilherme-dev123:010501iva@cluster0.xepzr.mongodb.net/?retryWrites=true&w=majority"
-    )
+    .connect("mongodb://localhost/eventos-calendario")
     .then(function() {
         console.log("Conectado com sucesso!");
     })
