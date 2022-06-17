@@ -3,12 +3,7 @@
 Para instalar as dependencias do projeto, executar:
 
 ```
-npm install --save express
-npm install --save express-handlebars
-npm install --save body-parser
-npm install --save mongoose
-npm install --save passport
-npm install --save passport-local
+npm install
 ```
 
 ## Começando o projeto
